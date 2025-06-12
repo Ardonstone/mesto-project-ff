@@ -1,7 +1,10 @@
 // Функция создания карточки
 
+const cardTemplate = document.querySelector('#card-template').content;
+
+
+
 function createCard(element, deleteCard, clickCard, likeCard) {
-  const cardTemplate = document.querySelector('#card-template').content;
   const copyTemplate = cardTemplate.querySelector('.places__item').cloneNode(true); 
   const cardName = element.name;
   const cardLink = element.link;
