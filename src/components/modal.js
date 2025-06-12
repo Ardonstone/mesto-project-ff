@@ -2,14 +2,14 @@
 
 function openPopup (popup) {
   popup.classList.add('popup_is-opened');
-  document.addEventListener('keydown', escapePopup(evt)); 
+  document.addEventListener('keydown', (evt) => {escapePopup(evt)}); 
 }
 
 // Закрытие попапов
 
 function closePopup (popup) {
   popup.classList.remove('popup_is-opened');
-  document.removeEventListener('keydown', escapePopup(evt))
+  document.removeEventListener('keydown', (evt) => {escapePopup(evt)})
 }
 
 function mousedownPopup (evt, popup) {

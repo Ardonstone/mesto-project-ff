@@ -2,8 +2,6 @@
 
 const cardTemplate = document.querySelector('#card-template').content;
 
-
-
 function createCard(element, deleteCard, clickCard, likeCard) {
   const copyTemplate = cardTemplate.querySelector('.places__item').cloneNode(true); 
   const cardName = element.name;

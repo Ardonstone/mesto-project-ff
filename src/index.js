@@ -1,9 +1,9 @@
 // импорт модулей
 
-import '../pages/index.css';
-import {createCard, likeCard, deleteCard} from '../components/card.js'
-import {initialCards} from '../components/cards.js';
-import {openPopup, closePopup, mousedownPopup} from '../components/modal.js';
+import './pages/index.css';
+import {createCard, likeCard, deleteCard} from './components/card.js'
+import {initialCards} from './components/cards.js';
+import {openPopup, closePopup, mousedownPopup} from './components/modal.js';
 
 // Дом-узлы темплейта
 
