@@ -1,33 +1,77 @@
-// Функция создания карточки
+import { requestAPI } from "./api";
+import { toggleConfirmPopup } from "../";
 
-const cardTemplate = document.querySelector('#card-template').content;
-
-function createCard(element, deleteCard, clickCard, likeCard) {
-  const copyTemplate = cardTemplate.querySelector('.places__item').cloneNode(true); 
-  const cardName = element.name;
-  const cardLink = element.link;
-  const cardLikeButton = copyTemplate.querySelector('.card__like-button')
+function createCard(card = {}, userId, clickCard, likeCard, activeDeleteButton) {
   
-  copyTemplate.querySelector('.card__image').src = cardLink;
-  copyTemplate.querySelector('.card__image').alt = cardName;
-  copyTemplate.querySelector('.card__title').textContent = cardName; 
-  copyTemplate.querySelector('.card__delete-button').addEventListener('click', () => {deleteCard(copyTemplate)});
-  copyTemplate.querySelector('.card__image').addEventListener('click', () => {clickCard({name: cardName, link: cardLink})});
-  cardLikeButton.addEventListener('click', () => {likeCard(cardLikeButton)});
+  const copyTemplate = getCardTemplate();
+  const image = copyTemplate.querySelector('.card__image');
+  const likeButton = copyTemplate.querySelector('.card__like-block_button');
+  const counter = copyTemplate.querySelector('.card__like-block_counter');
+  const deleteButton = copyTemplate.querySelector('.card__delete-button');
+  const name = card.name;
+  const link = card.link;
+
+  image.src = link;
+  image.alt = name;
+  copyTemplate.querySelector('.card__title').textContent = name; 
+
+  if (card.likes.find((like) => {like === card.owner['_id']})) {
+    likeButton.classList.toggle('card__like-block_button_is-active');
+  }
+
+  if (userId === card.owner._id) {
+    activeDeleteButton(deleteButton, card._id);
+  }
+
+  counter.textContent = card.likes.length;
+
+  image.addEventListener('click', () => {clickCard(name, link)});
+
+  likeButton.addEventListener('click', () => {likeCard(likeButton, counter, card._id)});
  
   return copyTemplate;
 }
 
+function getCardTemplate () {
+  const template = document.querySelector('#card-template').content;
+  return template.querySelector('.places__item').cloneNode(true); 
+};
+
+function updateCounter(likeButton, counter, likes) {
+
+  counter.textContent = likes.length;
+  if (likeButton.classList.contains('card__like-block_button_is-active')) {
+    likeButton.classList.remove('card__like-block_button_is-active');
+  } else {
+    likeButton.classList.add('card__like-block_button_is-active');
+  }
+
+};
+
 // Функция лайка карточек
 
-function likeCard(cardLikeButton) {
-  cardLikeButton.classList.toggle('card__like-button_is-active');
+function likeCard(likeButton, counter, cardId) {
+
+  const likeCardButton = likeButton.classList.contains('card__like-block_button_is-active')
+  ? requestAPI.deleteLike(cardId): requestAPI.likeCard(cardId);
+    likeCardButton.then((res) => {
+      updateCounter(likeButton, counter, res.likes);
+    })
+  .catch((err) => console.log(err))
 }
 
 // Функция удаления карточки
 
-function deleteCard(copyTemplate) {
-  copyTemplate.remove();
+function deleteCard(evt, currentButton, currentCardId) {
+  
+  evt.preventDefault();
+
+  requestAPI.deleteCard(currentCardId)
+  .then(() => {
+    currentButton.closest('.places__item').remove();
+    toggleConfirmPopup(false);
+  })
+  .catch((err) => console.log(err));
 }
 
 export {createCard, likeCard, deleteCard};

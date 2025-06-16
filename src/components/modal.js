@@ -2,14 +2,14 @@
 
 function openPopup (popup) {
   popup.classList.add('popup_is-opened');
-  document.addEventListener('keydown', (evt) => {escapePopup(evt)}); 
+  document.addEventListener('keydown', escapePopup(evt)); 
 }
 
 // Закрытие попапов
 
 function closePopup (popup) {
   popup.classList.remove('popup_is-opened');
-  document.removeEventListener('keydown', (evt) => {escapePopup(evt)})
+  document.removeEventListener('keydown', escapePopup(evt));
 }
 
 function mousedownPopup (evt, popup) {
@@ -20,7 +20,9 @@ function mousedownPopup (evt, popup) {
 
 function escapePopup (evt) {
   if (evt.key === 'Escape') {
-    closePopup(document.querySelector('.popup_is-opened')); 
+    if (document.querySelector('.popup_is-opened')){
+      closePopup(document.querySelector('.popup_is-opened')); 
+    }
   }
 }
 
