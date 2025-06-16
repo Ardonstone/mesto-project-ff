@@ -26,4 +26,13 @@ function escapePopup (evt) {
   }
 }
 
-export {openPopup, closePopup, mousedownPopup};
+function toggleConfirmPopup (flag) {
+  if (flag === true) {
+    openPopup(popupConfirm);
+  } 
+  else {
+    closePopup(popupConfirm)
+  }
+}
+
+export {openPopup, closePopup, mousedownPopup, toggleConfirmPopup};

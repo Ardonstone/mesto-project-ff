@@ -2,7 +2,7 @@
 
 import './pages/index.css';
 import {createCard, likeCard, deleteCard} from './components/card.js';
-import {openPopup, closePopup, mousedownPopup} from './components/modal.js';
+import {openPopup, closePopup, mousedownPopup, toggleConfirmPopup} from './components/modal.js';
 import {clearValidation, enableValidation} from './components/validation.js';
 import {requestAPI} from './components/api.js';
 import {renderLoading} from './components/utils.js';
@@ -59,15 +59,6 @@ const buttonSubmitAddCardForm = formNewCard.querySelector('.popup__button');
 
 const formConfirm = document.forms['delete-card'];
 
-export function toggleConfirmPopup (flag) {
-  if (flag === true) {
-    openPopup(popupConfirm);
-  } 
-  else {
-    closePopup(popupConfirm)
-  }
-}
-
 function setProfile (name, about, avatar) {
   profileName.textContent = name;
   profileAbout.textContent = about;
@@ -77,16 +68,19 @@ function setProfile (name, about, avatar) {
 // Обработчик clickов
 
 profileImage.addEventListener('click', () => {
+  clearValidation(formEditAvatar, validationConfig);
   openPopup(popupEditAvatar);
 });
 
 buttonNewCard.addEventListener('click', () => {
+  clearValidation(formNewCard, validationConfig);
   openPopup(popupNewCard);
 });
 
 buttonEdit.addEventListener('click', () => {
   inputAboutEditProfile.value = profileAbout.textContent;
   inputNameEditProfile.value = profileName.textContent;
+  clearValidation(formEditProfile, validationConfig);
   openPopup(popupEditProfile);
 });
 
@@ -102,7 +96,7 @@ function submitAddCardForm(evt) {
   renderLoading(buttonSubmitAddCardForm, true);
     requestAPI.addCard({name: inputNameNewCard.value, link: inputLinkNewCard.value})
   .then((res)=>{
-    templateContainer.prepend(createCard(res, res.owner._id, clickCard, likeCard, activeDeleteButton));
+    templateContainer.prepend(createCard(res, res.owner._id, clickCard, likeCard, activateDeleteButton));
     closePopup(popupNewCard);
     formNewCard.reset();
     clearValidation(formNewCard, validationConfig);
@@ -168,7 +162,7 @@ popups.forEach((popup) => {
 let currentButton;
 let currentCardId;
 
-function activeDeleteButton(deleteButton, cardId) {
+function activateDeleteButton(deleteButton, cardId) {
   deleteButton.style.display = ('block')
   deleteButton.addEventListener('click', () => {
     toggleConfirmPopup(true);
@@ -187,7 +181,7 @@ Promise.all([requestAPI.getProfile(), requestAPI.getCards()])
 .then(([user, cards]) => {
   setProfile(user.name, user.about, user.avatar);
   cards.forEach(async (card) => {
-    templateContainer.append(createCard(card, user['_id'], clickCard, likeCard, activeDeleteButton));
+    templateContainer.append(createCard(card, user['_id'], clickCard, likeCard, activateDeleteButton));
   })
 })
 .catch((err) => {

@@ -1,7 +1,7 @@
 import { requestAPI } from "./api";
-import { toggleConfirmPopup } from "../";
+import { toggleConfirmPopup } from "./modal";
 
-function createCard(card = {}, userId, clickCard, likeCard, activeDeleteButton) {
+function createCard(card = {}, userId, clickCard, likeCard, activateDeleteButton) {
   
   const copyTemplate = getCardTemplate();
   const image = copyTemplate.querySelector('.card__image');
@@ -20,7 +20,7 @@ function createCard(card = {}, userId, clickCard, likeCard, activeDeleteButton) 
   }
 
   if (userId === card.owner._id) {
-    activeDeleteButton(deleteButton, card._id);
+    activateDeleteButton(deleteButton, card._id);
   }
 
   counter.textContent = card.likes.length;
